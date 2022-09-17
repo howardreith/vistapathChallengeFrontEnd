@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
 import {
-  Box, Button, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow,
+  Box, Button, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Typography,
 } from '@mui/material';
 import * as PropTypes from 'prop-types';
 import { STATUSES } from '../../utils/constants';
+import { createNewCaseAnalysis } from '../../api/api';
 
-export default function CaseAnalysesTable({ caseAnalyses, onSetSelectedCaseAnalysis }) {
+export default function CaseAnalysesTable({
+  caseAnalyses, onSetSelectedCaseAnalysis, onUpdateCaseAnalyses, onSetIsEditingToTrue,
+}) {
   const [filter, setFilter] = useState('');
 
   const handleChange = ({ target: { value } }) => {
     setFilter(value);
+  };
+
+  const handleCreateNewCaseAnalysisClick = async () => {
+    const { data } = await createNewCaseAnalysis();
+    onUpdateCaseAnalyses(data._id, data);
+    onSetSelectedCaseAnalysis(data._id);
+    onSetIsEditingToTrue();
   };
 
   const handleDetailsClick = (target) => {
@@ -22,8 +32,12 @@ export default function CaseAnalysesTable({ caseAnalyses, onSetSelectedCaseAnaly
   const caseAnalysesToDisplay = caseAnalysesArray.filter((ca) => ca.status.toUpperCase().includes(filter));
 
   return (
-    <Box>
+    <Box align="center">
       <Box margin={1}>
+        <Button onClick={handleCreateNewCaseAnalysisClick}>Create New Case Analysis</Button>
+      </Box>
+      <Box margin={1}>
+        <Typography>Filter by Status</Typography>
         <Select
           labelId="filterByStatus"
           value={filter}
@@ -67,4 +81,6 @@ export default function CaseAnalysesTable({ caseAnalyses, onSetSelectedCaseAnaly
 CaseAnalysesTable.propTypes = {
   caseAnalyses: PropTypes.shape({}).isRequired,
   onSetSelectedCaseAnalysis: PropTypes.func.isRequired,
+  onUpdateCaseAnalyses: PropTypes.func.isRequired,
+  onSetIsEditingToTrue: PropTypes.func.isRequired,
 };

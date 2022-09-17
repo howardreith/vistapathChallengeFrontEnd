@@ -37,8 +37,10 @@ export default function LandingPage() {
       )}
       {!selectedCaseAnalysis && (
       <CaseAnalysesTable
+        onUpdateCaseAnalyses={updateCaseAnalyses}
         caseAnalyses={caseAnalyses}
         onSetSelectedCaseAnalysis={setSelectedCaseAnalysis}
+        onSetIsEditingToTrue={() => setIsEditing(true)}
       />
       )}
     </div>

@@ -57,6 +57,13 @@ export default function CreateCaseAnalysisForm({
     onUpdateCaseAnalyses(selectedCaseAnalysis._id, data);
   };
 
+  const handleBackToTable = () => {
+    if (isEditing) {
+      onToggleIsEditing();
+    }
+    onGoBackToTable();
+  };
+
   useEffect(() => {
     // Revoking Uris to prevent memory leaks
     files.forEach((file) => URL.revokeObjectURL(file.preview));
@@ -65,7 +72,7 @@ export default function CreateCaseAnalysisForm({
   return (
     <Box align="center">
       <Box>
-        <Button onClick={onGoBackToTable}>Back to Table</Button>
+        <Button onClick={handleBackToTable}>Back to Table</Button>
       </Box>
       <Box>
         <Button onClick={onToggleIsEditing}>Toggle Edit/View Data</Button>

@@ -25,3 +25,10 @@ export async function getCasesAnalyses() {
   });
   return result.json();
 }
+
+export async function createNewCaseAnalysis() {
+  const result = await fetch(`${backendUrl}/caseAnalysis/create`, {
+    method: 'post',
+  });
+  return result.json();
+}
