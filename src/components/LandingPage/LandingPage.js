@@ -35,6 +35,7 @@ export default function LandingPage() {
         onToggleIsEditing={() => setIsEditing(!isEditing)}
       />
       )}
+
       {!selectedCaseAnalysis && (
       <CaseAnalysesTable
         onUpdateCaseAnalyses={updateCaseAnalyses}

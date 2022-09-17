@@ -1,66 +1,116 @@
 # VistaPath Challenge - Front End
 
-In the project directory, you can run:
+This is the front end repository for the Vistapath challenge. This repo is one of a pair. For the back end, see
+[https://github.com/howardreith/vistapathChallengeBackEnd](https://github.com/howardreith/vistapathChallengeBackEnd)
 
-### `npm start`
+## Instructions for running
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Follow instructions for starting the back end as available in the Readme for the repo linked above.
+2. Install dependencies with `yarn install` or `npm install`.
+3. In the root directory, create a file `.env` with the following:
+```
+REACT_APP_BACKEND_URL="http://localhost:8080"
+```
+If you boot your node server at another local host, obviously this value will need to be different.
+3. Start the local server with `yarn start` or `npm run start`. This will boot up the webpack server at localhost:3000.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Note that the back end CORS setup is expecting requests from localhost:3000. If you use a different port, make sure
+to address as much in your .env file for the back end.
 
-### `npm test`
+## Instructions for running tests
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. With dependencies installed, run `yarn test` or `npm run test`.
 
-### `npm run build`
+## Discussion
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Architecture
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Front End
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+I am using React for its relative ease of state management and surgical DOM updates. Since there is a fair amount of
+state modification occurring both via server updates and user actions, a framework like React is a reasonable choice.
 
-### `npm run eject`
+Since the state management needs of this app are simple, and the circumstances for re-rendering few,
+I did not feel the need for any heavy state management libraries or even the use of a context provider.
+All state could be adequately managed via local useState hooks.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+I am using the Material UI styling library for relative ease of styling.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Since I am the only person working in this code base, I did not feel the need to employ Typescript, though
+I am using React propTypes to enforce some prop validation.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+I am using the react-dropzone library for file uploads, 'cause I'm not writing that for a code challenge.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### Back End
 
-## Learn More
+Seeing as how this is little more than a CRUD app I saw no cause to employ a framework other than Node. I'm sending
+JSON over the web, might as well write the app in Javascript.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Since the actions are literally ordinary CRUD actions, I saw no reason to employ any means beyond REST at this time.
+I thus follows an ordinary Controller / Service / Repository layer pattern (with the repository layer being satisfied
+with my Mongoose models).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Database
 
-### Code Splitting
+I observed the following requirements:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+* Data will be nested and require some degree of querying power.
+* Users will be actively updating the data.
+* In terms of CAP, since no priority was recommended, decided to prioritize availability over consistency at this time.
+* I found the data simply easiest to visualize as a document.
 
-### Analyzing the Bundle Size
+Since users will be updating data, some sort of database technology is necessary. That is to say, since the data is
+not static, it would not make sense to just store it in a CSV and read it into memory or something like that. The
+data must be persisted and updated in real-time.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Since the data is nested, a key-value store DB like Redis or Riak did not seem appropriate. The data did not seem
+reasonably modeled as a Graph, so a Graph DB seems inappropriate. Since we will not be focusing heavily on data
+analysis, a columnar database did not seem appropriate either.
 
-### Making a Progressive Web App
+So as is often the case I was left choosing between relational and document DBs. If I knew consistency was a
+strong requirement, I would have gone relational, probably SQLite or Postgres depending on how heavy I thought
+my queries would be. However, since this data seems easily representable as a document, and since I could see
+an argument for prioritizing availability, I ultimately went with MongoDB accessed through Mongoose.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Testing
 
-### Advanced Configuration
+I am using Jest for front and back-end testing. I am somewhat regretting this decision, at least on the back end,
+as jest does not play well with the latest version of Node. This is discussed in the TODOs below.
+I am using react-testing-library for React testing and shelf for in-memory mongo testing.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### Notable Decisions
 
-### Deployment
+I opted to store my image files in a dedicated S3 bucket. I inquired before working on the project
+if there were any security requirements for said images and was told no. Shifting the burden of
+storage and serving those images to the S3 server thus saves my server a great deal of load. This should be faster
+and more maintainable than if I stored my images on the server with my data.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+I am using the AirBNB linter to keep me honest and my code relatively clean and adhering to standards.
 
-### `npm run build` fails to minify
+I am only updating local state with changes made by the active user. I did not think it appropriate to re-fetch
+the entire database every time the user makes a change. As I mention in the TODOs below, a websocket connection
+should be present to push changes from other users.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+I am assuming a relatively small data set, which is why I do no pagination for the back end requests
+or for what is displayed in the table. If the data set is very large, the filtering I presently do in the
+front end will need to be shifted to the back end.
+
+### Notable things still to do
+
+* The page is clearly not very beautiful as of yet. It could use some prettifying, such as making an image carousel,
+making a modal to display full-sized images rather than redirecting to S3, and more.
+* My code coverage, especially on the front end, is poor. I need to write a great deal more unit tests.
+* My components are a bit verbose. They can be broken up into smaller components and more succinctly unit tested.
+The editing form vs. the case analysis display view, for example, should be split into separate sub-components.
+* It is possible for other users to update data while I am using the app, and the present implementation will not
+push these updates to the UI. I would like to implement a websocket to guarantee real-time data updates.
+* I am presently not deleting files out of my S3 server when a user deletes a previously uploaded image. This should
+be fixed.
+* The present version of Node's module functionality doesn't play well with jest mocking, thus I was having a hard time 
+mocking out my S3 upload helper module to prevent my tests from trying to upload to my S3 bucket when they ran. This
+needs to be resolved and proper tests for both uploading and including image files need to be written.
+* I do not have hardly anything in the way of error handling at the moment. I assume happy path for basically
+all back end requests. This should be remedied.
+* Some of my object propTypes are just empty shapes. They should be fleshed out.
+* I am presently only enforcing status change limitations on the front end. The back end should throw
+errors if an invalid status change is attempted.

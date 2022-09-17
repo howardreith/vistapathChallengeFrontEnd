@@ -109,12 +109,14 @@ export default function CreateCaseAnalysisForm({
       <Box>
         <Button onClick={handleBackToTable}>Back to Table</Button>
       </Box>
+
       {!isEditing && selectedCaseAnalysis.status !== STATUSES.APPROVED
         && (
         <Box>
           <Button data-testid="editButton" onClick={onToggleIsEditing}>Edit</Button>
         </Box>
         )}
+
       {!isEditing && (
       <Box data-testid="readModeContainer">
         <Box>
@@ -153,6 +155,7 @@ export default function CreateCaseAnalysisForm({
         {renderApprovalButtons()}
       </Box>
       )}
+
       {isEditing && (
       <Box data-testid="editModeContainer">
         <form id="createCaseAnalysisForm" onSubmit={handleSaveCaseAnalysisFormSubmit}>
@@ -168,7 +171,7 @@ export default function CreateCaseAnalysisForm({
             <TextField
               id="caseNotesTextBox"
               multiline
-              name="caseNotesTExtBox"
+              name="caseNotesTextBox"
               label="Notes"
               value={notes}
               rows={3}
