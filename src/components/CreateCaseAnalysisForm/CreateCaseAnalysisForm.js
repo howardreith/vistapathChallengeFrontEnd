@@ -105,18 +105,18 @@ export default function CreateCaseAnalysisForm({
   };
 
   return (
-    <Box align="center">
+    <Box align="center" data-testid="createCaseAnalysisForm">
       <Box>
         <Button onClick={handleBackToTable}>Back to Table</Button>
       </Box>
       {!isEditing && selectedCaseAnalysis.status !== STATUSES.APPROVED
         && (
         <Box>
-          <Button onClick={onToggleIsEditing}>Edit</Button>
+          <Button data-testid="editButton" onClick={onToggleIsEditing}>Edit</Button>
         </Box>
         )}
       {!isEditing && (
-      <Box>
+      <Box data-testid="readModeContainer">
         <Box>
           <Typography variant="h2">{selectedCaseAnalysis.caseName}</Typography>
         </Box>
@@ -134,9 +134,8 @@ export default function CreateCaseAnalysisForm({
         </Box>
         <Box>
           {selectedCaseAnalysis.images.map((image) => (
-            <Link href={image.location} target="_blank">
+            <Link href={image.location} target="_blank" key={image.key}>
               <Box
-                key={image.key}
                 component="img"
                 margin={1}
                 sx={{
@@ -155,7 +154,7 @@ export default function CreateCaseAnalysisForm({
       </Box>
       )}
       {isEditing && (
-      <Box>
+      <Box data-testid="editModeContainer">
         <form id="createCaseAnalysisForm" onSubmit={handleSaveCaseAnalysisFormSubmit}>
           <FormControl>
             <TextField
@@ -187,7 +186,7 @@ export default function CreateCaseAnalysisForm({
             </Box>
             <Box sx={{ display: 'inline' }}>
               {files.map((file, i) => (
-                <Box>
+                <Box key={file.name}>
                   <Box
                     key={file.name}
                     component="img"
@@ -238,7 +237,7 @@ export default function CreateCaseAnalysisForm({
               </Box>
             </Box>
             <Box margin={1}>
-              <Button id="updatePasswordSubmitButton" type="submit" variant="contained">Save Case Analysis</Button>
+              <Button type="submit" variant="contained" data-testid="saveSubmitButton">Save Case Analysis</Button>
             </Box>
             <Box margin={1}>
               <Button onClick={handleClearEditState}>Cancel Editing</Button>
