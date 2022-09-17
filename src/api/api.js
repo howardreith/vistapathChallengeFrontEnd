@@ -32,3 +32,15 @@ export async function createNewCaseAnalysis() {
   });
   return result.json();
 }
+
+export async function transitionCaseStatus(data) {
+  const { id, newStatus } = data;
+  const formData = new FormData();
+  formData.append('id', id);
+  formData.append('status', newStatus);
+  const result = await fetch(`${backendUrl}/caseAnalysis/update`, {
+    method: 'post',
+    body: formData,
+  });
+  return result.json();
+}
