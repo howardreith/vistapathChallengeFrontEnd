@@ -114,3 +114,5 @@ all back end requests. This should be remedied.
 * Some of my object propTypes are just empty shapes. They should be fleshed out.
 * I am presently only enforcing status change limitations on the front end. The back end should throw
 errors if an invalid status change is attempted.
+* I don't presently have any loading animations. That should be fixed.
+* My timestamps are raw ISO timestamps. They should be more human-friendly.

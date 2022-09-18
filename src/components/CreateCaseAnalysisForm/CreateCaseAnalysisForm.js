@@ -160,23 +160,27 @@ export default function CreateCaseAnalysisForm({
       <Box data-testid="editModeContainer">
         <form id="createCaseAnalysisForm" onSubmit={handleSaveCaseAnalysisFormSubmit}>
           <FormControl>
-            <TextField
-              id="caseNameInput"
-              type="text"
-              name="caseNameInput"
-              label="Case Name"
-              value={caseName}
-              onChange={(e) => setCaseName(e.target.value)}
-            />
-            <TextField
-              id="caseNotesTextBox"
-              multiline
-              name="caseNotesTextBox"
-              label="Notes"
-              value={notes}
-              rows={3}
-              onChange={(e) => setNotes(e.target.value)}
-            />
+            <Box margin={1}>
+              <TextField
+                id="caseNameInput"
+                type="text"
+                name="caseNameInput"
+                label="Case Name"
+                value={caseName}
+                onChange={(e) => setCaseName(e.target.value)}
+              />
+            </Box>
+            <Box margin={1}>
+              <TextField
+                id="caseNotesTextBox"
+                multiline
+                name="caseNotesTextBox"
+                label="Notes"
+                value={notes}
+                rows={3}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </Box>
             <Box>
               <Box {...getRootProps()} margin={5} sx={{ border: 1, width: 300, height: 300 }}>
                 <input {...getInputProps()} />
@@ -203,18 +207,20 @@ export default function CreateCaseAnalysisForm({
                     alt={`Item you uploaded #${i + 1}`}
                     src={file.preview}
                   />
-                  <Button onClick={() => handleDeleteUnsavedImage(i)}>Delete</Button>
+                  <Box>
+                    <Button onClick={() => handleDeleteUnsavedImage(i)}>Delete</Button>
+                  </Box>
                 </Box>
               ))}
             </Box>
             <Box>
-              <Typography>Previously uploaded images</Typography>
+              {selectedCaseAnalysis.images && selectedCaseAnalysis.images.length > 0
+                && <Typography variant="h4">Previously uploaded images</Typography>}
               <Box>
                 {selectedCaseAnalysis.images.map((image) => (
-                  <Box>
+                  <Box key={image.key}>
                     <Link href={image.location} target="_blank">
                       <Box
-                        key={image.key}
                         component="img"
                         margin={1}
                         sx={{
