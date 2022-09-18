@@ -48,7 +48,7 @@ Seeing as how this is little more than a CRUD app I saw no cause to employ a fra
 JSON over the web, might as well write the app in Javascript.
 
 Since the actions are literally ordinary CRUD actions, I saw no reason to employ any means beyond REST at this time.
-I thus follows an ordinary Controller / Service / Repository layer pattern (with the repository layer being satisfied
+I thus followed an ordinary Controller / Service / Repository layer pattern (with the repository layer being satisfied
 with my Mongoose models).
 
 #### Database
