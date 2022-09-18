@@ -12,7 +12,8 @@ This is the front end repository for the Vistapath challenge. This repo is one o
 REACT_APP_BACKEND_URL="http://localhost:8080"
 ```
 If you boot your node server at another local host, obviously this value will need to be different.
-3. Start the local server with `yarn start` or `npm run start`. This will boot up the webpack server at localhost:3000.
+
+4. Start the local server with `yarn start` or `npm run start`. This will boot up the webpack server at localhost:3000.
 
 Note that the back end CORS setup is expecting requests from localhost:3000. If you use a different port, make sure
 to address as much in your .env file for the back end.
